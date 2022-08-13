@@ -387,6 +387,7 @@ int main(){
     //wall1(map[MAP_H][MAP_W]);
     frontMenu();
     //_getch();
+    return 0;
 }
 
 
