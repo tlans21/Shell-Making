@@ -57,7 +57,7 @@ void drawWall(char map[MAP_H][MAP_W]){
         for(width = 0; width <= MAP_W + 1; width++){
             gotoxy(width + 1, height + 1);
             if(height == 0 || width == 0 || height == MAP_H + 1 || width == MAP_W + 1){
-                printf("¡á");
+                printf("ï¿½ï¿½");
             }
         }
     }
@@ -72,7 +72,7 @@ void drawWall(char map[MAP_H][MAP_W]){
         for(width = HALF_W; width <=HALF_W+6; width++){
             gotoxy(width, height + 2);
             if(width == HALF_W || height == 0 || width == HALF_W + 6 || height == 6){
-                printf("¡á");
+                printf("ï¿½ï¿½");
             }
         }
     }
@@ -102,13 +102,13 @@ int frontMenu(){
 
     SetConsoleTextAttribute(outhandle, 14);
     gotoxy(2, 6);
-    printf("Left : ¡ç ");
+    printf("Left : ï¿½ï¿½ ");
     gotoxy(2, 7);
-    printf("Right : ¡æ ");
+    printf("Right : ï¿½ï¿½ ");
     gotoxy(2, 8);
-    printf("Rotation : ¡è ");
+    printf("Rotation : ï¿½ï¿½ ");
     gotoxy(2, 9);
-    printf("Down : ¡é OR Space bar");
+    printf("Down : ï¿½ï¿½ OR Space bar");
     gotoxy(2, 10);
     printf("Exit : 'T' ");
 
@@ -145,7 +145,7 @@ void drawMap(char map[MAP_H][MAP_W]){
                 printf(".");
             }else if(map[height][width] == BLOCK){
                 SetConsoleTextAttribute(outhandle, 14);
-                printf("¡á");
+                printf("ï¿½ï¿½");
                 SetConsoleTextAttribute(outhandle, 7);
             }
         }
@@ -178,7 +178,7 @@ void drawSubShape(char map[MAP_H][MAP_W], int shape[4][4]){
             if(shape[height-3][width - HALF_W - 1] == BLOCK){
                 gotoxy(width, height);
                 SetConsoleTextAttribute(outhandle, 14);
-                printf("¡á");
+                printf("ï¿½ï¿½");
                 SetConsoleTextAttribute(outhandle, 7);
             }
         }
@@ -287,8 +287,100 @@ void setBlock(int blockshape[4][4]){
         case 0:
             copyBlock(blockshape, shape[0]);
             break;
+        case 1:
+            copyBlock(blockshape, shape[1]);
+            break;
+        case 2:
+            copyBlock(blockshape, shape[2]);
+            break;
+        case 3:
+            copyBlock(blockshape, shape[3]);
+            break;
+        case 4:
+            copyBlock(blockshape, shape[4]);
+            break;
+        case 5:
+            copyBlock(blockshape, shape[5]);
+            break;
+        case 6:
+            copyBlock(blockshape, shape[6]);
+        default :
+            break;
     }
 }
+
+void removeShape(char map[MAP_H][MAP_W], int blockshape[4][4],Location * Loc){
+    int height;
+    int width;
+
+    for(height = 0; height<4; height++){
+        for(width = 0; width < 4; width++){
+            if(blockshape[height][width] == BLOCK){
+                map[Loc->Y + height][Loc->X + width] = EMPTY;
+            }
+        }
+    }
+}
+
+int getShapeLeftLoc(int blockShape[4][4]){
+    int height;
+    int width;
+    int leftW = 4;
+    for(width = 0; width < 4; width++){
+        for(height = 0; height<4; height++){
+            if(blockShape[height][width] == BLOCK){
+                if(leftW > width){
+                    leftW = width;
+                }
+            }
+        }
+    }
+    return leftW;
+}
+int getShapeRightLoc(int blockShape[4][4]){
+    int height;
+    int width;
+    int rightW = 0;
+    for(width = 3; width >= 0; width--){
+        for(height = 3; height>=0; height--){
+            if(blockShape[height][width] == BLOCK){
+                if(rightW < width){
+                    rightW = width;
+                }
+            }
+        }
+    }
+    return rightW+1;
+}
+
+int getShapeBottomLoc(int blockShape[4][4]){
+    int height;
+    int width;
+    int bottomH = 0;
+    for(width = 3; width >= 0 ; width--){
+        for(height = 3; height >= 0; height--){
+            if(blockShape[height][width] == BLOCK){
+                if(bottomH < height){
+                    bottomH = height;
+                }
+            }
+        }
+    }
+    return bottomH+1;
+}
+int getEachBottomLoc(int blockShape[4][4], int width){
+    int height;
+    int bottomH = -1;
+    for(height = 3; height >= 0; height--){
+        if(blockShape[height][width] == BLOCK){
+            if(bottomH < height){
+                bottomH = height;
+            }
+        }
+    }
+    return bottomH;
+}
+
 int main(){
     init();
     //char map[MAP_H][MAP_W] ={0,};
