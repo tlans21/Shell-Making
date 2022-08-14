@@ -380,6 +380,147 @@ int getEachBottomLoc(int blockShape[4][4], int width){
     }
     return bottomH;
 }
+int getEachLeftLoc(int blockShape[4][4], int height){
+    int width;
+    int leftW = 5;
+    for(width = 0; width < 4; width++){
+        if(blockShape[height][width] == BLOCK){
+            if(leftW > width){
+                leftW = width;
+            }
+        }
+    }
+    return leftW;
+}
+int getEachRightLoc(int blockShape[4][4], int height){
+    int width;
+    int rightW = -1;
+    for(width = 0; width < 4; width++){
+        if(blockShape[height][width] == BLOCK){
+            if(rightW < width){
+                rightW = width;
+            }
+        }
+    }
+    return rightW;
+}
+
+void goLeft(char map[MAP_H][MAP_W], int blockShape[4][4], Location* Loc){
+    int leftW = getShapeLeftLoc(blockShape);//가장 왼쪽 끝 위치 알기, 즉 범위 설정
+    int boundaryArr[4] = {0};
+    int i;
+    for(i = 0; i < 4; i++){
+        boundaryArr[i] = getEachLeftLoc(blockShape, i);
+        //각 높이별로 왼쪽이 어디에있는지 기록, 각 왼쪽 위치
+    }
+
+    if((Loc -> X) + leftW > 0){
+        if(!((boundaryArr[0] != 5 && map[Loc->Y ][Loc->X + boundaryArr[0] - 1] != EMPTY)
+        ||(boundaryArr[1] != 5 && map[Loc->Y + 1][Loc->X + boundaryArr[1] - 1] != EMPTY)
+        ||(boundaryArr[2] != 5 && map[Loc->Y + 2][Loc->X + boundaryArr[2] - 1] != EMPTY)
+        ||(boundaryArr[3] != 5 && map[Loc->Y + 3][Loc->X + boundaryArr[3] - 1] != EMPTY))){
+
+            removeShape(map, blockShape, Loc);
+            (Loc->X)--;
+        }
+    }
+}
+
+void goRight(char map[MAP_H][MAP_W], int blockShape[4][4], Location * Loc){
+    int rightW = getShapeRightLoc(blockShape);
+    int boundaryArr[4] = {0};
+    int i;
+    for(i = 0; i < 4; i++){
+        boundaryArr[i] = getEachLeftLoc(blockShape, i);
+    }
+
+    if((Loc -> X) + rightW < MAP_W){
+        if(!((boundaryArr[0] != 5 && map[Loc->Y ][Loc->X + boundaryArr[0] + 1] != EMPTY)
+        ||(boundaryArr[1] != 5 && map[Loc->Y + 1][Loc->X + boundaryArr[1] + 1] != EMPTY)
+        ||(boundaryArr[2] != 5 && map[Loc->Y + 2][Loc->X + boundaryArr[2] + 1] != EMPTY)
+        ||(boundaryArr[3] != 5 && map[Loc->Y + 3][Loc->X + boundaryArr[3] + 1] != EMPTY))){
+
+            removeShape(map, blockShape, Loc);
+            (Loc -> X)++;
+        }
+    }
+}
+
+int fixShape(char map[MAP_H][MAP_W], int blockShape[4][4], Location *Loc){
+    int width;
+    int height;
+    for(width = 0; width < 4; width++){
+        for(height = 0; height < 4; height++){
+            if(blockShape[height][width] == 1){
+                map[Loc->Y + height][Loc->X + width] = BLOCK;
+            }
+        }
+    }
+    return 0;
+}
+
+int goDown(char map[MAP_H][MAP_W], int blockShape[4][4], Location *Loc){
+    int bottomH = getShapeBottomLoc(blockShape);
+    int bottomArr[4] = {0};
+    int i;
+    
+    for(i = 0; i < 4; i++){
+        bottomArr[i] = getEachBottomLoc(blockShape, i);
+    }
+
+    if(Loc->Y + bottomH == MAP_H 
+    ||(bottomArr[0] != 5 && map[Loc->Y + bottomArr[0] +1][Loc->X] != EMPTY)
+    ||(bottomArr[1] != 5 && map[Loc->Y + bottomArr[1] +1][Loc->X + 1] != EMPTY)
+    ||(bottomArr[2] != 5 && map[Loc->Y + bottomArr[2] +1][Loc->X + 2] != EMPTY)
+    ||(bottomArr[3] != 5 && map[Loc->Y + bottomArr[3] +1][Loc->X + 3] != EMPTY)){
+        fixShape(map, blockShape, Loc);
+            Sleep(1000/8);
+            return TRUE;
+    }
+
+    if(Loc->Y + bottomH < MAP_H){
+        removeShape(map, blockShape, Loc);
+        Sleep(1000/8);
+        (Loc->Y)++;
+    }
+    return FALSE;
+}
+
+void rotate(char mpa[MAP_H][MAP_W], int blockShape[4][4], Location * Loc){
+    int i;
+    int j;
+    int tmp[4][4];
+    int leftW, rightW, bottomH;
+
+    for(i = 0; i < 4; i++){
+        for(j = 0; j < 4; j++){
+            if(blockShape[i][j] ==BLOCK){
+                tmp[j][3-i] == blockShape[i][j];
+                blockShape[i][j] = EMPTY;
+            }
+        }
+    }
+
+    for(i = 0; i < 4; i++){
+        for(j = 0; j < 4; j++){
+            if(tmp[i][j] == 1){
+                blockShape[i][j] = BLOCK;
+            }
+        }
+    }
+}
+
+int goSpace(char map[MAP_H][MAP_W], int blockShape[4][4], Location *Loc){
+    int bottomH = getShapeBottomLoc(blockShape);
+    int bottomArr[4] = {0};
+    int i;
+    for(i=0; i<4; i++){
+        bottomArr[i] = getEachBottomLoc(blockShape, i);
+    }
+return 0;
+}
+
+
 
 int main(){
     init();
